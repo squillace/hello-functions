@@ -3,11 +3,11 @@
 # See https://porter.sh/author-bundles for documentation on how to configure your bundle
 # Uncomment out the sections below to take full advantage of what Porter can do!
 
-name: HELLO
-version: 0.1.0
+name: hello-functions
+version: 0.1.1
 description: "An example Porter configuration"
-invocationImage: porter-hello:latest
-tag: deislabs/porter-hello-bundle:latest
+invocationImage: hello-functions-install:v0.1.1
+tag: squillace/hello-functions:v0.1.1
 
 # Uncomment out the line below to use a template Dockerfile for your invocation image
 dockerfile: Dockerfile.tmpl
@@ -15,13 +15,9 @@ dockerfile: Dockerfile.tmpl
 mixins:
   - exec
   - functions
+  - kubernetes
 
 install:
-  - exec:
-      description: "Install Hello World"
-      command: bash
-      flags:
-        c: func
   - functions:
       description: "Using the func CLI...."
       arguments:
@@ -38,11 +34,13 @@ upgrade:
         c: echo World 2.0
 
 uninstall:
-  - exec:
-      description: "Uninstall Hello World"
-      command: bash
+  - functions:
+      description: "Using the func CLI...."
+      arguments:
+        - kubernetes 
+        - remove 
       flags:
-        c: echo Goodbye World
+        namespace: keda
 
 
 # See https://porter.sh/author-bundles/#dependencies
@@ -53,6 +51,6 @@ uninstall:
 #      database-name: wordpress
 
 # See https://porter.sh/wiring/#credentials
-#credentials:
-#  - name: kubeconfig
-#    path: /root/.kube/config
+credentials:
+  - name: kubeconfig
+    path: /root/.kube/config
